@@ -4,24 +4,24 @@
 
 ## Задание 1
 
-1. ![1725808615391](image/README/1725808615391.png)
+1.  ![1725808615391](image/README/1725808615391.png)
    https://github.com/Torrmund/shvirtd-example-python
-2. ![1725810400235](image/README/1725810400235.png) ![1725810438670](image/README/1725810438670.png)
-3. ![1725820140401](image/README/1725820140401.png)
+2.  ![1725810400235](image/README/1725810400235.png) ![1725810438670](image/README/1725810438670.png)
+3.  ![1725820140401](image/README/1725820140401.png)
 
-   `sudo apt install python3-virtualenv
+   ```
+   sudo apt install python3-virtualenv
    virtualenv --python=/usr/bin/python3 venv
    source venv/bin/activate
    pip install -r requirements.txt
    export DB_HOST='127.0.0.1' DB_USER='app' DB_PASSWORD='QwErTy1234' DB_NAME='virtd'
    docker run -d -p 3306:3306 -e MYSQL_ROOT_PASSWORD="YtReWq4321" -e MYSQL_DATABASE="virtd" -e MYSQL_USER="app" -e MYSQL_PASSWORD="QwErTy1234" --name test_mysql mysql:8
    python main.py
-
-   `
+   ```
 
 ## Задание 2
 
-1. ![1725824190143](image/README/1725824190143.png)
+1.  ![1725824190143](image/README/1725824190143.png)
 
    ![1725824219228](image/README/1725824219228.png)
 
