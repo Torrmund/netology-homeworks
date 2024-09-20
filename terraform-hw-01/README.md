@@ -30,6 +30,7 @@
 
 ## Задание 3
 
-1. https://opentofu.org/docs/intro/install/deb/
-   ![1726846490889](image/README/1726846490889.png)
+1. ![1726846490889](image/README/1726846490889.png)
+
+   https://opentofu.org/docs/intro/install/deb/
 2. Не удалось проверить, так ка кне нашел зеркало для регистри tofu :((
