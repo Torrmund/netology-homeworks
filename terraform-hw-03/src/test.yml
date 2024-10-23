@@ -38,3 +38,4 @@
         dest: /tmp/all.pass
         content: "{{ secrets }}"
       when: secrets is defined
+      
