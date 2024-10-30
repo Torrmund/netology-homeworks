@@ -1,0 +1,17 @@
+---
+  el:
+    hosts:
+      alpine:
+        ansible_connection: docker
+  deb:
+    hosts:
+      debian:
+        ansible_connection: docker
+  local:
+    hosts:
+      localhost:
+        ansible_connection: local
+  fedora:
+    hosts:
+      fedora:
+        ansible_connection: docker
