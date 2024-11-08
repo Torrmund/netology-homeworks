@@ -1,0 +1,37 @@
+---
+sources:
+  nginx_access_logs:
+    type: "file"
+    include: 
+      - /var/log/nginx/access.log
+    read_from: end
+
+transforms:
+  parse_nginx:
+    type: "remap"
+    inputs: 
+      - nginx_access_logs
+    source: |
+      . = parse_nginx_log!(.message, "combined")
+
+sinks:
+  clickhouse:
+    type: "clickhouse"
+    inputs: 
+      - parse_nginx
+    endpoint: http://{{ clickhouse_server_ip }}:8123
+    database: {{ clickhouse_database_name }}
+    table: {{ clickhouse_table_name }}
+    skip_unknown_fields: true
+    encoding:
+      timestamp_format: "unix"
+    request:
+      settings:
+        input_format_skip_unknown_fields: 1
+
+  console:
+    type: "console"
+    inputs:
+      - parse_nginx
+    encoding:
+      codec: json

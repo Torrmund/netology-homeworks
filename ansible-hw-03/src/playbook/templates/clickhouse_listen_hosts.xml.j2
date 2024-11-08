@@ -1,0 +1,5 @@
+<clickhouse>
+{% for host in clickhouse_listen_hosts %}
+    <listen_host>{{ host }}</listen_host>
+{% endfor %}
+</clickhouse>

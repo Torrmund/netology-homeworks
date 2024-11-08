@@ -1,0 +1,4 @@
+---
+clickhouse_server_ip: 84.252.134.71
+clickhouse_database_name: logs
+clickhouse_table_name: logs

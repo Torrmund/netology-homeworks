@@ -1,0 +1,10 @@
+server {
+    listen 80;
+    server_name localhost;
+
+    location / {
+        root /opt/lighthouse;  # Путь к файлам Lighthouse
+        index index.html;      # Основной файл для отдачи
+        try_files $uri $uri/ =404;  # Обработка файлов и директорий
+    }
+}

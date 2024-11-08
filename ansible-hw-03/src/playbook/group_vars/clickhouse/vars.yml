@@ -1,0 +1,26 @@
+---
+clickhouse_version: "22.3.3.44"
+clickhouse_packages:
+  - clickhouse-common-static
+  - clickhouse-client
+  - clickhouse-server
+
+clickhouse_gpg_key_url: https://packages.clickhouse.com/rpm/lts/repodata/repomd.xml.key
+clickhouse_repo_url: "https://packages.clickhouse.com/deb"
+
+clickhouse_table_field_options: >
+  (
+    agent String,
+    client String,
+    referer String,
+    request String,
+    size Int32,
+    status Int32,
+    timestamp DateTime
+  )
+  ENGINE = MergeTree()
+  ORDER BY (timestamp, client)
+
+clickhouse_listen_hosts:
+  - "0.0.0.0"
+  - "localhost"
