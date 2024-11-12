@@ -1,0 +1,25 @@
+---
+clickhouse_version: "22.3.3.44"
+
+clickhouse_listen_host:
+  - "0.0.0.0"
+
+clickhouse_dbs_custom:
+  - { name: logs, state:present }
+
+clickhouse_users_custom:
+  - { name: "vector",
+      password: "123",
+      networks: { 0.0.0.0, 127.0.0.1, 78.85.4.82, 84.201.151.66 },
+      profile: "vector",
+      quota: "default",
+      dbs: [ logs, default ],
+      comment: "vector user"
+  }
+
+clickhouse_profiles_custom:
+  vector:
+    max_memory_usage: 10000000000
+    use_uncompressed_cache: 0
+    load_balancing: random
+    max_partitions_per_insert_block: 100

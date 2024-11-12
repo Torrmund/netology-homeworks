@@ -1,0 +1,19 @@
+---
+- name: Install clickhouse
+  become: true
+  hosts: clickhouse
+  roles:
+    - clickhouse
+
+- name: Install Vector
+  become: true
+  hosts: vector
+  roles:
+    - simple_nginx
+    - vector
+
+- name: Install Lighthouse
+  become: true
+  hosts: lighthouse
+  roles:
+    - lighthouse

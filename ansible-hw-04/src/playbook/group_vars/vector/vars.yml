@@ -1,0 +1,14 @@
+---
+vector_systemd_user: vector
+vector_systemd_group: vector
+
+vector_version: "0.42.0"
+
+vector_clickhouse_connection_ip: "84.201.150.121"
+
+vector_clickhouse_connection_database_name: "logs"
+vector_clickhouse_connection_table_name: "logs"
+
+vector_clickhouse_auth_required: true
+vector_clickhouse_connection_user: vector
+vector_clickhouse_connection_password: "123"

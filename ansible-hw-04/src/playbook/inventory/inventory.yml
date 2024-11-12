@@ -1,0 +1,18 @@
+---
+clickhouse:
+  hosts:
+    clickhouse-server:
+      ansible_host: 84.201.150.121
+      ansible_user: emav
+
+vector:
+  hosts:
+    app-instance:
+      ansible_host: 84.201.151.66
+      ansible_user: emav
+
+lighthouse:
+  hosts:
+    lighthouse-interface:
+      ansible_host: 51.250.37.31
+      ansible_user: emav
