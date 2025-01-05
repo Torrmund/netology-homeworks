@@ -1,0 +1,13 @@
+---
+jenkins_master:
+  hosts:
+    jenkins-master:
+      ansible_host: 84.252.135.8
+      ansible_user: emav
+
+jenkins_agent:
+  hosts:
+    jenkins-agent:
+      ansible_host: 51.250.32.125
+      ansible_user: emav
+      agent_secret: <enter your agent secret>

@@ -1,0 +1,98 @@
+---
+- name: Установка и настройка Jenkins Master
+  hosts: jenkins_master
+  become: yes
+  tasks:
+    - name: Установка необходимых пакетов
+      apt:
+        name:
+          - openjdk-17-jdk
+          - wget
+          - gnupg
+        state: present
+        update_cache: yes
+
+    - name: Добавление ключа репозитория Jenkins
+      apt_key:
+        url: https://jenkins-ci.org/debian/jenkins.io.key
+        state: present
+
+    - name: Добавление репозитория Jenkins
+      apt_repository:
+        repo: deb http://pkg.jenkins.io/debian-stable binary/
+        state: present
+
+    - name: Обновление списка пакетов
+      apt:
+        update_cache: yes
+
+    - name: Установка Jenkins
+      apt:
+        name: jenkins
+        state: present
+
+    - name: Запуск и включение Jenkins
+      systemd:
+        name: jenkins
+        state: started
+        enabled: yes
+
+    - name: Убедитесь, что Jenkins работает
+      uri:
+        url: http://localhost:8080
+        status_code: 200,403
+
+- name: Установка и настройка Jenkins Agent
+  hosts: jenkins_agent
+  become: yes
+  tasks:
+    - name: Установка необходимых пакетов
+      apt:
+        name:
+          - openjdk-17-jdk
+          - iptables
+        state: present
+
+    - name: Инициализация LXD
+      command: lxd init --minimal
+
+    - name: Включение IP-маскарадинга для интерфейса lxdbr0
+      sysctl:
+        name: net.ipv4.ip_forward
+        value: 1
+        state: present
+        reload: yes
+
+    - name: Настройка маскарадинга с помощью iptables
+      iptables:
+        chain: POSTROUTING
+        table: nat
+        jump: MASQUERADE
+        out_interface: eth0
+
+    - name: Загрузка агента Jenkins
+      get_url:
+        url: http://{{ hostvars['jenkins-master'].ansible_host }}:8080/jnlpJars/agent.jar
+        dest: /usr/local/bin/agent.jar
+
+    - name: Создание systemd unit файла для Jenkins Agent
+      copy:
+        dest: /etc/systemd/system/jenkins-agent.service
+        content: |
+          [Unit]
+          Description=Jenkins Agent
+          After=network.target
+
+          [Service]
+          ExecStart=/usr/bin/java -jar /usr/local/bin/agent.jar -url http://{{ hostvars['jenkins-master'].ansible_host }}:8080/ -secret {{ agent_secret }} -name "agent-lxd-1" -webSocket -workDir "/opt/jenkins-agent"
+          Restart=always
+
+          [Install]
+          WantedBy=multi-user.target
+
+    - name: Запуск и включение Jenkins Agent
+      systemd:
+        name: jenkins-agent
+        state: started
+        enabled: yes
+        daemon_reload: yes
