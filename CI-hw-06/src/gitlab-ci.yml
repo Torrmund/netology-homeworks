@@ -1,0 +1,24 @@
+stages:
+  - build
+  - push
+
+variables:
+  DOCKER_IMAGE: "restfull-api:gitlab-$CI_COMMIT_SHORT_SHA"
+  REGISTRY: "51.250.41.198:5050"
+  REGISTRY_USER: $CI_REGISTRY_USER
+  REGISTRY_PASSWORD: $CI_REGISTRY_PASSWORD
+
+before_script:
+  - echo "Logging in to the Docker registry..."
+  - echo "$REGISTRY_PASSWORD" | docker login $REGISTRY -u "$REGISTRY_USER" --password-stdin
+
+build:
+  stage: build
+  script:
+    - docker build -t $DOCKER_IMAGE .
+
+push:
+  stage: push
+  script:
+    - docker tag $DOCKER_IMAGE $REGISTRY/python/$DOCKER_IMAGE
+    - docker push $REGISTRY/python/$DOCKER_IMAGE
