@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  prometheus:
+    image: ubuntu/prometheus:2.50.0-22.04_stable
+    container_name: prometheus
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    environment:
+      - TZ=UTC+04:00
+  
+  grafana:
+    image: grafana/grafana:11.3.2-ubuntu
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana/provisioning:/etc/grafana/provisioning
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+
+  node_exporter:
+    image: prom/node-exporter:v1.8.2
+    container_name: node_exporter
+    ports:
+      - "9100:9100"
