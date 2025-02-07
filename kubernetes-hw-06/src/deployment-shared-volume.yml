@@ -1,0 +1,46 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shared-volume-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shared-volume-app
+  template:
+    metadata:
+      labels:
+        app: shared-volume-app
+    spec:
+      containers:
+      - name: busybox
+        image: busybox
+        command: ["/bin/sh"]
+        args: ["-c", "while true; do echo test_$(date) >> /shared-data/output.txt; sleep 5; done"]
+        volumeMounts:
+        - name: shared-storage
+          mountPath: /shared-data
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "0.5"
+          limits:
+            memory: "512Mi"
+            cpu: "1"
+      - name: multitool
+        image: wbitt/network-multitool
+        command: ["/bin/sh"]
+        args: ["-c", "tail -f /shared-data/output.txt"]
+        volumeMounts:
+        - name: shared-storage
+          mountPath: /shared-data
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "0.5"
+          limits:
+            memory: "512Mi"
+            cpu: "1"
+      volumes:
+      - name: shared-storage
+        emptyDir: {}
