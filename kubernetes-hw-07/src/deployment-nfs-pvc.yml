@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nfs-multitool-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nfs-multitool
+  template:
+    metadata:
+      labels:
+        app: nfs-multitool
+    spec:
+      containers:
+      - name: multitool
+        image: wbitt/network-multitool
+        command: ["/bin/sh", "-c", "sleep infinity"]
+        volumeMounts:
+        - mountPath: "/mnt/nfs-data"
+          name: nfs-storage
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "0.5"
+          limits:
+            memory: "512Mi"
+            cpu: "1"
+      volumes:
+      - name: nfs-storage
+        persistentVolumeClaim:
+          claimName: nfs-pvc

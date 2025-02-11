@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: shared-storage-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: shared-storage
+  template:
+    metadata:
+      labels:
+        app: shared-storage
+    spec:
+      containers:
+      - name: busybox
+        image: busybox
+        command: ["/bin/sh", "-c", "while true; do echo test_$(date) >> /mnt/shared-data/log.txt; sleep 5; done"]
+        volumeMounts:
+        - mountPath: "/mnt/shared-data"
+          name: shared-storage
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "0.5"
+          limits:
+            memory: "512Mi"
+            cpu: "1"
+      - name: multitool
+        image: wbitt/network-multitool
+        command: ["/bin/sh", "-c", "tail -f /mnt/shared-data/log.txt"]
+        volumeMounts:
+        - mountPath: "/mnt/shared-data"
+          name: shared-storage
+        resources:
+          requests:
+            memory: "256Mi"
+            cpu: "0.5"
+          limits:
+            memory: "512Mi"
+            cpu: "1"
+      volumes:
+      - name: shared-storage
+        persistentVolumeClaim:
+          claimName: local-pvc
