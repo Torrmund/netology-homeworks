@@ -1,0 +1,39 @@
+namespace: notes-app
+image:
+  repository: torrmund/notes-app
+  tag: 0.1.0
+  pullPolicy: IfNotPresent
+
+flask:
+  env: "production"  # или "development" для разных окружений
+
+web:
+  existingConfig: ""
+  replicas: 2
+  resources:
+    requests:
+      memory: "128Mi"
+      cpu: "100m"
+    limits:
+      memory: "256Mi"
+      cpu: "500m"
+
+postgres:
+  existingSecret: ""
+  user: postgres
+  password: postgres
+  db: notesdb
+  storage: 1Gi
+  resources:
+    requests:
+      memory: "256Mi"
+      cpu: "200m"
+    limits:
+      memory: "512Mi"
+      cpu: "1"
+
+ingress:
+  enabled: true
+  host: notes.example.com
+  annotations:
+    nginx.ingress.kubernetes.io/rewrite-target: /

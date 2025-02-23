@@ -1,0 +1,40 @@
+{{- if .Values.ingress.enabled }}
+Ваше приложение доступно по адресу:
+{{- range .Values.ingress.hosts }}
+  http{{ if $.Values.ingress.tls }}s{{ end }}://{{ .host }}
+{{- end }}
+{{- else if contains "NodePort" .Values.service.type }}
+Получите внешний IP ноды:
+  kubectl get nodes -o wide -n {{ .Release.Namespace | quote }}
+
+Порт приложения:
+  kubectl get svc web-service -n {{ .Release.Namespace | quote }} -o jsonpath='{.spec.ports[0].nodePort}'
+{{- else if eq .Values.service.type "LoadBalancer" }}
+Дождитесь получения EXTERNAL-IP:
+  kubectl get svc web-service -n {{ .Release.Namespace | quote }} -w
+{{- end }}
+
+1. Проверка статуса компонентов:
+   kubectl get pods,svc,ing -n {{ .Release.Namespace | quote }}
+
+2. Просмотр логов веб-приложения:
+   kubectl logs -l app=web -n {{ .Release.Namespace | quote }} --tail=50
+
+3. Подключение к PostgreSQL:
+   PGPASSWORD=$(kubectl get secret postgres-secret -n {{ .Release.Namespace | quote }} -o jsonpath='{.data.DB_PASSWORD}' | base64 -d)
+   kubectl run psql-client --rm -it --image=postgres:13-alpine --env=PGPASSWORD=$PGPASSWORD -- \
+     psql -h postgres-service -U {{ .Values.postgres.user }} {{ .Values.postgres.db }}
+
+4. Обновление приложения:
+   helm upgrade {{ .Release.Name }} {{ .Chart.Name }} --namespace {{ .Release.Namespace | quote }} --set image.tag=<NEW_TAG>
+
+5. Удаление релиза:
+   helm uninstall {{ .Release.Name }} --namespace {{ .Release.Namespace | quote }}
+   kubectl delete pvc -l app=postgres -n {{ .Release.Namespace | quote }}
+
+Примечания:
+- Текущая версия образа: {{ .Values.image.repository }}:{{ .Values.image.tag }}
+- Размер PVC для PostgreSQL: {{ .Values.postgres.storage }}
+- Ресурсы веб-подов: 
+  CPU: {{ .Values.web.resources.requests.cpu }} / {{ .Values.web.resources.limits.cpu }}
+  Memory: {{ .Values.web.resources.requests.memory }} / {{ .Values.web.resources.limits.memory }}

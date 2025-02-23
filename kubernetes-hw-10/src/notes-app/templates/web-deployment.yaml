@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: web
+  namespace: {{ .Values.namespace }}
+spec:
+  replicas: {{ .Values.web.replicas }}
+  selector:
+    matchLabels:
+      app: web
+  template:
+    metadata:
+      labels:
+        app: web
+    spec:
+      containers:
+      - name: web
+        image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+        ports:
+        - containerPort: 5000
+        envFrom:
+        - configMapRef:
+            name: app-config-{{ .Values.namespace }}
+        - secretRef:
+            name: postgres-secret-{{ .Values.namespace }}
+        resources:
+          {{- toYaml .Values.web.resources | nindent 12 }}

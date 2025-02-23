@@ -1,0 +1,11 @@
+{{- if not .Values.web.existingConfig }}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: app-config-{{ .Values.namespace }}
+  namespace: {{ .Values.namespace }}
+data:
+  DB_HOST: "postgres-service.{{ .Release.Namespace }}.svc.cluster.local"
+  DB_NAME: {{ .Values.postgres.db | quote }}
+  FLASK_ENV: {{ .Values.flask.env | quote }}
+{{- end }}
