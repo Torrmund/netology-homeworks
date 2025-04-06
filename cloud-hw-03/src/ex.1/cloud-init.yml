@@ -1,0 +1,12 @@
+#cloud-config
+write_files:
+  - path: /var/www/html/index.html
+    content: |
+      <html>
+      <body>
+        <h1>Welcome to the LAMP server!</h1>
+        <img src="https://storage.yandexcloud.net/${bucket_name}/${image_key}" alt="Example Image">
+      </body>
+      </html>
+runcmd:
+  - systemctl restart apache2
